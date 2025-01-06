@@ -1,7 +1,7 @@
 import pyodbc
 
 class MSSQLConnection:
-    def __init__(self, driver = 'SQL Server', server = 'QUANFX\QUANFX', database ='QLBH', username = '', password = ''):
+    def __init__(self, driver = 'SQL Server', server = 'QUANFX\QUANFX', database ='BMI', username = '', password = ''):
         self.driver = driver
         self.server = server
         self.database = database
@@ -58,7 +58,7 @@ class MSSQLConnection:
 if __name__ == '__main__':
     conn = MSSQLConnection()
     conn.connect()
-    rows = conn.query('SELECT * FROM KHACHHANG')
+    rows = conn.query('SELECT * FROM HEALTH_DETAIL')
     for r in rows:
         print(r)
 
