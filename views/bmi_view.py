@@ -140,7 +140,7 @@ class BMIView:
         
 
     def show_history(self):
-        HistoryWindow(self.root, self.model.history)
+        HistoryWindow(self.root, self.model)
 
     def validate_float(self, P):
         """

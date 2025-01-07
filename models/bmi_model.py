@@ -1,30 +1,45 @@
 import os
 from datetime import datetime
 import json
+from database.connect import MSSQLConnection
 
 # --------------------- Model --------------------- #
 class BMIModel:
     def __init__(self):
+        self.db = MSSQLConnection()
         self.height = 0.0  # in centimeters
         self.weight = 0.0  # in kilograms
         self.history_file = "bmi_history.json"
         self.history = self.load_history()
     
     def load_history(self):
-        if os.path.exists(self.history_file):
-            with open(self.history_file, 'r') as file:
-                return json.load(file)
-        return []
+        history = self.db.query('SELECT * FROM HISTORY')
+        category = self.get_all_category()
+        result = []
+        for h in history:
+            result.append({
+                "id": h.Id,
+                "date": h.Date,
+                "bmi": h.BMI,
+                "categoryName": next((c for c in category if c.Id == h.CategoryId), None).Name,
+                "note": h.Note
+            })
+        return result
+    
+    def get_all_category(self):
+        return self.db.query('SELECT * FROM CATEGORY')
+    
+    def get_health_detail_by_categoryid(self, categoryId):
+        return self.db.query_one(f'SELECT * FROM HEALTH_DETAIL WHERE CategoryId={categoryId}')
 
-    def save_history(self, bmi, category):
+    def save_history(self, bmi, categoryId):
         entry = {
             "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "bmi": bmi,
-            "category": category
+            "categoryId": categoryId,
+            "note": None
         }
-        self.history.append(entry)
-        with open(self.history_file, 'w') as file:
-            json.dump(self.history, file, indent=4)
+        return self.db.insert(f"INSERT INTO HISTORY (Date, BMI, CategoryId) VALUES ('{entry['date']}', {entry['bmi']}, {entry['categoryId']})")
 
     def set_height(self, height):
         self.height = height
@@ -40,11 +55,13 @@ class BMIModel:
         return bmi
 
     def get_bmi_category(self, bmi):
-        if bmi < 18.5:
-            return "Thiếu cân", "Bạn đang thiếu cân.\nBổ sung thực phẩm dinh dưỡng."
-        elif 18.5 <= bmi < 24.9:
-            return "Bình thường", "Cân nặng hợp lý.\nDuy trì chế độ ăn và tập luyện."
-        elif 24.9 <= bmi < 29.9:
-            return "Thừa cân", "Bạn đang thừa cân.\nTăng cường vận động."
-        else:
-            return "Béo phì", "Bạn đang béo phì.\nTham khảo ý kiến bác sĩ."
+        result = self.db.query(f"SELECT * FROM CATEGORY")
+
+        for r in result:
+            if r.MaxOfBMI is None:
+                return r.Id, r.Name, r.Description
+            elif  r.MinOfBMI <= bmi < r.MaxOfBMI:
+                return r.Id, r.Name, r.Description
+
+
+            

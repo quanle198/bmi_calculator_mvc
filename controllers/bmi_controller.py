@@ -10,6 +10,7 @@ class BMIController:
         self.setup()
         self.last_valid_height = 0.0  # To keep track of the last valid height
         self.last_valid_weight = 0.0  # To keep track of the last valid weight
+        self.categoryId = None
 
     def setup(self):
         # Initialize entries with slider values
@@ -114,11 +115,12 @@ class BMIController:
     def calculate_bmi(self):
         try:
             bmi = self.model.calculate_bmi()
-            category, advice = self.model.get_bmi_category(bmi)
+            categoryId, category, advice = self.model.get_bmi_category(bmi)
+            self.categoryId = categoryId
             self.view.update_bmi(bmi)
             self.view.update_category(category)
             self.view.update_advice(advice)
-            self.model.save_history(bmi, category)
+            self.model.save_history(bmi, categoryId)
             # Enable view details button
             self.view.enable_view_details()
         except ValueError as e:
@@ -134,6 +136,6 @@ class BMIController:
         """
         category = self.view.category_var.get()
         if category not in ["--", "Lỗi"]:
-            HealthDetailView(self.view.root, category)
+            HealthDetailView(self.view.root, self.categoryId, self.model)
         else:
             self.view.update_advice("Không có dữ liệu để hiển thị chi tiết.")

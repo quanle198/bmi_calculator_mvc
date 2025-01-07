@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 class HistoryWindow:
-    def __init__(self, parent, history):
+    def __init__(self, parent, model):
         self.window = tk.Toplevel(parent)
         self.window.title("Lịch Sử BMI")
         self.window.geometry("400x400")
@@ -16,10 +16,11 @@ class HistoryWindow:
         title_label.pack(pady=(0, 10))
 
         # Danh sách lịch sử
+        history = model.load_history()
         for entry in history:
             entry_label = ttk.Label(
                 main_frame,
-                text=f"{entry['date']}: BMI={entry['bmi']} ({entry['category']})",
+                text=f"{entry['id']} - {entry['date']} - BMI={entry['bmi']} ({entry['categoryName']})",
                 font=("Helvetica", 12),
                 foreground="#555555",
                 wraplength=360,

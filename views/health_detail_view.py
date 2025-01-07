@@ -1,15 +1,17 @@
 import tkinter as tk
 from tkinter import ttk
+import html
 
 class HealthDetailView:
-    def __init__(self, parent, bmi_category):
+    def __init__(self, parent, bmi_category_id, model):
         self.parent = parent
-        self.bmi_category = bmi_category
+        self.bmi_category_id = bmi_category_id
         self.window = tk.Toplevel(parent)
         self.window.title("Chi tiết đánh giá sức khỏe")
         self.window.geometry("400x400")
         self.window.resizable(False, False)
         self.window.configure(bg="#F0F4F7")
+        self.model = model
 
         # Center the window relative to parent
         self.center_window()
@@ -64,19 +66,11 @@ class HealthDetailView:
         self.window.geometry(f"+{x}+{y}")
 
     def get_description(self):
-        descriptions = {
-            "Thiếu cân": "Chỉ số BMI của bạn cho thấy bạn đang thiếu cân. Thiếu cân có thể dẫn đến các vấn đề sức khỏe như suy giảm miễn dịch, loãng xương và mệt mỏi.",
-            "Bình thường": "Chỉ số BMI của bạn trong khoảng bình thường, điều này cho thấy bạn có cơ thể khỏe mạnh. Hãy tiếp tục duy trì chế độ ăn uống và lối sống lành mạnh.",
-            "Thừa cân": "Chỉ số BMI của bạn cho thấy bạn đang thừa cân. Thừa cân có thể tăng nguy cơ mắc các bệnh như tiểu đường, cao huyết áp và các vấn đề về tim mạch.",
-            "Béo phì": "Chỉ số BMI của bạn cho thấy bạn đang béo phì. Béo phì là yếu tố nguy cơ chính cho nhiều bệnh nghiêm trọng như bệnh tim, đột quỵ, và một số loại ung thư."
-        }
-        return descriptions.get(self.bmi_category, "Không có thông tin chi tiết.")
+        result = self.model.get_health_detail_by_categoryid(self.bmi_category_id)
+
+        return result.HealthAssessment
 
     def get_recommendations(self):
-        recommendations = {
-            "Thiếu cân": "• Tăng cường ăn thực phẩm giàu dinh dưỡng như ngũ cốc nguyên hạt, protein, và chất béo lành mạnh.\n• Tập luyện thể dục thường xuyên để tăng cường sức mạnh cơ bắp.\n• Tham khảo ý kiến bác sĩ hoặc chuyên gia dinh dưỡng.",
-            "Bình thường": "• Tiếp tục duy trì chế độ ăn uống cân đối.\n• Vận động thường xuyên để giữ gìn sức khỏe.\n• Theo dõi cân nặng định kỳ để đảm bảo không tăng thêm.",
-            "Thừa cân": "• Giảm lượng calo tiêu thụ bằng cách hạn chế thực phẩm giàu đường và chất béo.\n• Tăng cường hoạt động thể chất như đi bộ, chạy bộ hoặc bơi lội.\n• Xem xét tư vấn với chuyên gia dinh dưỡng.",
-            "Béo phì": "• Thực hiện chế độ ăn kiêng nghiêm ngặt dưới sự giám sát của bác sĩ.\n• Tăng cường vận động thể chất.\n• Cân nhắc các phương pháp điều trị y tế hoặc phẫu thuật nếu cần thiết."
-        }
-        return recommendations.get(self.bmi_category, "Không có khuyến nghị cụ thể.")
+        result = self.model.get_health_detail_by_categoryid(self.bmi_category_id)
+
+        return result.Recommendation.replace("\\n", "\n")
