@@ -21,7 +21,8 @@ class MSSQLConnection:
             f'SERVER={self.server};'
             f'DATABASE={self.database};'
             f'UID={self.username};'
-            f'PWD={self.password}'
+            f'PWD={self.password};'
+            f'CHARSET=UTF8;'
         )
 
     @contextmanager
@@ -67,6 +68,7 @@ class MSSQLConnection:
         try:
             with self._get_connection() as conn:
                 cursor = conn.cursor()
+                # conn.setencoding(encoding='utf-8')
                 cursor.execute(sql, params or ())
                 conn.commit()
                 logger.info(f'Statement executed and committed: {sql}')

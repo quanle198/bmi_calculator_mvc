@@ -40,6 +40,14 @@ class BMIModel:
             "note": None
         }
         return self.db.insert(f"INSERT INTO HISTORY (Date, BMI, CategoryId) VALUES ('{entry['date']}', {entry['bmi']}, {entry['categoryId']})")
+    
+    def delete_history_entry(self, entry_id):
+        return self.db.delete(f"DELETE FROM HISTORY WHERE Id={entry_id}")
+    
+    def update_history_note(self, entry_id, note):
+        query = "UPDATE HISTORY SET Note = ? WHERE Id = ?"
+        params = (note, entry_id)
+        return self.db.update(query, params)
 
     def set_height(self, height):
         self.height = height
