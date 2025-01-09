@@ -49,8 +49,8 @@ class HealthDetailView:
         style.configure("Accent.TButton",
                         foreground="#8ab4f8",
                         background="#8ab4f8",
-                        font=("Helvetica", 12, "bold"),
-                        padding=10,
+                        font=("Helvetica", 10, "bold"),
+                        padding=1,
                         borderwidth=0,
                         focusthickness=0)
         style.map("Accent.TButton",

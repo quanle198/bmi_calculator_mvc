@@ -3,16 +3,18 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 from views.history_view import HistoryWindow
 from views.faq_view import FAQWindow
+from views.login_view import LoginWindow
 
 # --------------------- View --------------------- #
 class BMIView:
     def __init__(self, root, model):
         self.root = root
         self.root.title("BMI Calculator")
-        self.root.geometry("500x700")  # Increased height to accommodate the new button
+        self.root.geometry("500x800")  # Increased height to accommodate the new button
         self.root.resizable(True, True)
         self.root.configure(bg="#8ab4f8")  # Light background color
         self.model = model
+        self.is_logged_in = False  # Track login state
 
         #icon
         image_icon=tk.PhotoImage(file="Assets/img/bmi-icon.png")
@@ -27,7 +29,7 @@ class BMIView:
         main_frame.grid(sticky="NSEW")
 
         # Configure grid in main_frame
-        for i in range(12):  # Increased range to accommodate new widgets
+        for i in range(14):  # Increased range to accommodate new widgets
             main_frame.rowconfigure(i, weight=1)
         for i in range(2):
             main_frame.columnconfigure(i, weight=1)
@@ -106,43 +108,64 @@ class BMIView:
 
         # New: View Details Button
         self.view_details_button = ttk.Button(main_frame, text="Xem chi tiết", style="Accent.TButton")
-        self.view_details_button.grid(row=12, column=0, columnspan=2, pady=10, ipadx=10, ipady=10)
-        self.view_details_button.state(['disabled'])  # Disabled by default
+        self.view_details_button.grid(row=13, column=0, columnspan=2, pady=10, ipadx=10, ipady=10)
+        self.view_details_button.grid_remove()  # Disabled by default
 
         # Thêm nút "Xem Lịch Sử"
         self.view_history_button = ttk.Button(main_frame, text="Xem Lịch Sử", style="Accent.TButton")
         self.view_history_button.grid(row=6, column=0, columnspan=2, pady=10, ipadx=10, ipady=10)
         self.view_history_button.config(command=self.show_history)
+        self.view_history_button.grid_remove()  # Disable history button
 
         # Thêm nút "Xem FAQ"
         self.view_faq_button = ttk.Button(main_frame, text="Xem FAQ", style="Accent.TButton", command=self.show_faq)
         self.view_faq_button.grid(row=7, column=0, columnspan=2, pady=10, ipadx=10, ipady=10)
 
+        # New: Login Button
+        self.login_button = ttk.Button(main_frame, text="Login", style="Accent.TButton", command=self.open_login)
+        self.login_button.grid(row=8, column=0, columnspan=2, pady=10, ipadx=10, ipady=10)
+
         # Separator
         separator = ttk.Separator(main_frame, orient='horizontal')
-        separator.grid(row=8, column=0, columnspan=2, sticky="EW", pady=20)
+        separator.grid(row=9, column=0, columnspan=2, sticky="EW", pady=20)
 
         # Result Section
         self.bmi_var = tk.StringVar(value="--")
         bmi_label_title = ttk.Label(main_frame, text="BMI", font=("Helvetica", 16), foreground="#555555")
-        bmi_label_title.grid(row=9, column=0, sticky="E", padx=10)
+        bmi_label_title.grid(row=10, column=0, sticky="E", padx=10)
         self.bmi_label = ttk.Label(main_frame, textvariable=self.bmi_var, font=("Helvetica", 16, "bold"), foreground="#000000")
-        self.bmi_label.grid(row=9, column=1, sticky="W", padx=10)
+        self.bmi_label.grid(row=10, column=1, sticky="W", padx=10)
 
         self.category_var = tk.StringVar(value="--")
         category_label_title = ttk.Label(main_frame, text="Thể loại", font=("Helvetica", 16), foreground="#555555")
-        category_label_title.grid(row=10, column=0, sticky="E", padx=10)
+        category_label_title.grid(row=11, column=0, sticky="E", padx=10)
         self.category_label = ttk.Label(main_frame, textvariable=self.category_var, font=("Helvetica", 16, "bold"), foreground="#000000")
-        self.category_label.grid(row=10, column=1, sticky="W", padx=10)
+        self.category_label.grid(row=11, column=1, sticky="W", padx=10)
 
         self.advice_var = tk.StringVar(value="Nhập chiều cao và cân nặng để tính BMI.")
         advice_label = ttk.Label(main_frame, textvariable=self.advice_var, font=("Helvetica", 12), wraplength=400, foreground="#777777", justify="center")
-        advice_label.grid(row=11, column=0, columnspan=2, pady=10)
+        advice_label.grid(row=12, column=0, columnspan=2, pady=10)
 
         # Additional Styling for Other Widgets (Optional)
         self.style.configure("TScale", troughcolor="#D3D3D3", background="#F0F4F7")
 
-        
+    def open_login(self):
+        """Open the login window."""
+        LoginWindow(self.root, self.model, self.on_login_success)
+
+    def on_login_success(self):
+        """Handle actions after successful login."""
+        self.is_logged_in = True
+        self.view_history_button.grid()  # Show history button
+        self.login_button.config(text="Logout", command=self.logout)
+  
+
+    def logout(self):
+        """Handle user logout."""
+        self.is_logged_in = False
+        self.view_history_button.grid_remove()  # Disable history button
+        self.login_button.config(text="Login", command=self.open_login)
+ 
 
     def show_history(self):
         HistoryWindow(self.root, self.model)
@@ -191,7 +214,7 @@ class BMIView:
         self.weight_slider.config(command=command)
 
     def enable_view_details(self):
-        self.view_details_button.state(['!disabled'])
+        self.view_details_button.grid()
 
     def disable_view_details(self):
-        self.view_details_button.state(['disabled'])
+        self.view_details_button.grid_remove()
