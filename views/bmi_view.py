@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
 from views.history_view import HistoryWindow
+from views.faq_view import FAQWindow
 
 # --------------------- View --------------------- #
 class BMIView:
@@ -91,8 +92,8 @@ class BMIView:
         self.style.configure("Accent.TButton",
                              foreground="#8ab4f8",
                              background="#8ab4f8",
-                             font=("Helvetica", 14, "bold"),
-                             padding=10,
+                             font=("Helvetica", 10, "bold"),
+                             padding=1,
                              borderwidth=0,  # Flat design
                              focusthickness=0)  # Remove focus border
 
@@ -101,38 +102,42 @@ class BMIView:
                        foreground=[('active', '#8ab4f8')])
 
         self.calculate_button = ttk.Button(main_frame, text="Xem kết quả", style="Accent.TButton")
-        self.calculate_button.grid(row=5, column=0, columnspan=2, pady=20, ipadx=20, ipady=10)
+        self.calculate_button.grid(row=5, column=0, columnspan=2, pady=10, ipadx=10, ipady=10)
 
         # New: View Details Button
         self.view_details_button = ttk.Button(main_frame, text="Xem chi tiết", style="Accent.TButton")
-        self.view_details_button.grid(row=11, column=0, columnspan=2, pady=10, ipadx=20, ipady=10)
+        self.view_details_button.grid(row=12, column=0, columnspan=2, pady=10, ipadx=10, ipady=10)
         self.view_details_button.state(['disabled'])  # Disabled by default
 
         # Thêm nút "Xem Lịch Sử"
         self.view_history_button = ttk.Button(main_frame, text="Xem Lịch Sử", style="Accent.TButton")
-        self.view_history_button.grid(row=6, column=0, columnspan=2, pady=10, ipadx=20, ipady=10)
+        self.view_history_button.grid(row=6, column=0, columnspan=2, pady=10, ipadx=10, ipady=10)
         self.view_history_button.config(command=self.show_history)
+
+        # Thêm nút "Xem FAQ"
+        self.view_faq_button = ttk.Button(main_frame, text="Xem FAQ", style="Accent.TButton", command=self.show_faq)
+        self.view_faq_button.grid(row=7, column=0, columnspan=2, pady=10, ipadx=10, ipady=10)
 
         # Separator
         separator = ttk.Separator(main_frame, orient='horizontal')
-        separator.grid(row=7, column=0, columnspan=2, sticky="EW", pady=20)
+        separator.grid(row=8, column=0, columnspan=2, sticky="EW", pady=20)
 
         # Result Section
         self.bmi_var = tk.StringVar(value="--")
         bmi_label_title = ttk.Label(main_frame, text="BMI", font=("Helvetica", 16), foreground="#555555")
-        bmi_label_title.grid(row=8, column=0, sticky="E", padx=10)
+        bmi_label_title.grid(row=9, column=0, sticky="E", padx=10)
         self.bmi_label = ttk.Label(main_frame, textvariable=self.bmi_var, font=("Helvetica", 16, "bold"), foreground="#000000")
-        self.bmi_label.grid(row=8, column=1, sticky="W", padx=10)
+        self.bmi_label.grid(row=9, column=1, sticky="W", padx=10)
 
         self.category_var = tk.StringVar(value="--")
         category_label_title = ttk.Label(main_frame, text="Thể loại", font=("Helvetica", 16), foreground="#555555")
-        category_label_title.grid(row=9, column=0, sticky="E", padx=10)
+        category_label_title.grid(row=10, column=0, sticky="E", padx=10)
         self.category_label = ttk.Label(main_frame, textvariable=self.category_var, font=("Helvetica", 16, "bold"), foreground="#000000")
-        self.category_label.grid(row=9, column=1, sticky="W", padx=10)
+        self.category_label.grid(row=10, column=1, sticky="W", padx=10)
 
         self.advice_var = tk.StringVar(value="Nhập chiều cao và cân nặng để tính BMI.")
         advice_label = ttk.Label(main_frame, textvariable=self.advice_var, font=("Helvetica", 12), wraplength=400, foreground="#777777", justify="center")
-        advice_label.grid(row=10, column=0, columnspan=2, pady=10)
+        advice_label.grid(row=11, column=0, columnspan=2, pady=10)
 
         # Additional Styling for Other Widgets (Optional)
         self.style.configure("TScale", troughcolor="#D3D3D3", background="#F0F4F7")
@@ -141,6 +146,9 @@ class BMIView:
 
     def show_history(self):
         HistoryWindow(self.root, self.model)
+
+    def show_faq(self):
+        FAQWindow(self.root, self.model)  # Mở cửa sổ FAQ
 
     def validate_float(self, P):
         """

@@ -26,6 +26,17 @@ class BMIModel:
             })
         return result
     
+    def load_faq(self):
+        faq = self.db.query('SELECT * FROM FAQ')
+        result = []
+        for item in faq:
+            result.append({
+                "id": item.Id,
+                "question": item.Question,
+                "answer": item.Answer
+            })
+        return result
+    
     def get_all_category(self):
         return self.db.query('SELECT * FROM CATEGORY')
     
