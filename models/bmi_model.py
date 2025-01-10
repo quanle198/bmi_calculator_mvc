@@ -9,11 +9,31 @@ class BMIModel:
         self.db = MSSQLConnection()
         self.height = 0.0  # in centimeters
         self.weight = 0.0  # in kilograms
-        self.history_file = "bmi_history.json"
+        self.current_user_id = None
         self.history = self.load_history()
     
+    def login_user(self, username, password):
+        user = self.db.query_one(f"SELECT * FROM USERS WHERE Username='{username}' AND Password='{password}'")
+        if user:
+            self.current_user_id = user.Id
+            return True, user.Id, user.Username, user.Role
+        return False, None, None
+    
+    def register_user(self, username, password, role):
+        try:
+            query = "INSERT INTO USERS (Username, Password, Role) VALUES (?, ?, ?)"
+            params = (username, password, role)
+            self.db.insert(query, params)
+            return True
+        except:
+            return False
+    
     def load_history(self):
-        history = self.db.query('SELECT * FROM HISTORY')
+        if self.current_user_id is None:
+            return []
+        query = "SELECT * FROM HISTORY WHERE UserId = ?"
+        params = (self.current_user_id)
+        history = self.db.query(query, params)
         category = self.get_all_category()
         result = []
         for h in history:
@@ -43,14 +63,15 @@ class BMIModel:
     def get_health_detail_by_categoryid(self, categoryId):
         return self.db.query_one(f'SELECT * FROM HEALTH_DETAIL WHERE CategoryId={categoryId}')
 
-    def save_history(self, bmi, categoryId):
+    def save_history(self, bmi, userId, categoryId):
         entry = {
             "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "bmi": bmi,
+            "userId": userId,
             "categoryId": categoryId,
-            "note": None
+            "note": "---"
         }
-        return self.db.insert(f"INSERT INTO HISTORY (Date, BMI, CategoryId) VALUES ('{entry['date']}', {entry['bmi']}, {entry['categoryId']})")
+        return self.db.insert(f"INSERT INTO HISTORY (Date, BMI, UserId, CategoryId, Note) VALUES ('{entry['date']}', {entry['bmi']}, {entry['userId']}, {entry['categoryId']}, '{entry['note']}')")
     
     def delete_history_entry(self, entry_id):
         return self.db.delete(f"DELETE FROM HISTORY WHERE Id={entry_id}")

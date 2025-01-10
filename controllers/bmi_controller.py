@@ -120,7 +120,8 @@ class BMIController:
             self.view.update_bmi(bmi)
             self.view.update_category(category)
             self.view.update_advice(advice)
-            self.model.save_history(bmi, categoryId)
+            if self.view.is_logged_in:
+                self.model.save_history(bmi, self.view.userId, categoryId)
             # Enable view details button
             self.view.enable_view_details()
         except ValueError as e:

@@ -72,9 +72,8 @@ class RegisterWindow:
             messagebox.showwarning("Cảnh báo", "Mật khẩu phải ít nhất 6 ký tự.")
             return
 
-        success = self.model.register_user(username, password)
+        success = self.model.register_user(username, password, "user")
         if success:
-            messagebox.showinfo("Thành công", "Đăng ký thành công. Bạn có thể đăng nhập ngay bây giờ.")
             self.window.destroy()
             self.on_success()
         else:

@@ -54,22 +54,21 @@ class LoginWindow:
         """
         Xử lý đăng nhập.
         """
-        # username = self.username_var.get().strip()
-        # password = self.password_var.get().strip()
+        username = self.username_var.get().strip()
+        password = self.password_var.get().strip()
 
-        # if not username or not password:
-        #     messagebox.showwarning("Cảnh báo", "Vui lòng nhập tên đăng nhập và mật khẩu.")
-        #     return
+        if not username or not password:
+            messagebox.showwarning("Cảnh báo", "Vui lòng nhập tên đăng nhập và mật khẩu.")
+            return
 
-        # success, user_id, role = self.model.login_user(username, password)
-        # if success:
-        #     messagebox.showinfo("Thành công", f"Đăng nhập thành công với vai trò '{role}'.")
-        #     self.window.destroy()
-        #     self.on_success(user_id, role)
-        # else:
-        #     messagebox.showerror("Lỗi", "Tên đăng nhập hoặc mật khẩu không đúng.")
-        self.window.destroy()
-        self.on_success()
+        success, user_id, user_name, role = self.model.login_user(username, password)
+        if success:
+            messagebox.showinfo("Thành công", f"Đăng nhập thành công!")
+            self.window.destroy()
+            self.on_success(user_id, user_name, role)
+        else:
+            messagebox.showerror("Lỗi", "Tên đăng nhập hoặc mật khẩu không đúng.")
+    
 
     def show_register(self):
         """

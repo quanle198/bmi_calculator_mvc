@@ -15,6 +15,7 @@ class BMIView:
         self.root.configure(bg="#8ab4f8")  # Light background color
         self.model = model
         self.is_logged_in = False  # Track login state
+        self.userId = None  # Track the user ID
 
         #icon
         image_icon=tk.PhotoImage(file="Assets/img/bmi-icon.png")
@@ -106,10 +107,8 @@ class BMIView:
         self.calculate_button = ttk.Button(main_frame, text="Xem kết quả", style="Accent.TButton")
         self.calculate_button.grid(row=5, column=0, columnspan=2, pady=10, ipadx=10, ipady=10)
 
-        # New: View Details Button
-        self.view_details_button = ttk.Button(main_frame, text="Xem chi tiết", style="Accent.TButton")
-        self.view_details_button.grid(row=13, column=0, columnspan=2, pady=10, ipadx=10, ipady=10)
-        self.view_details_button.grid_remove()  # Disabled by default
+        self.user_name_label = ttk.Label(main_frame, text="", font=("Helvetica", 12), foreground="#555555")
+        self.user_name_label.grid(row=4, column=0, columnspan=2, pady=(30, 0))
 
         # Thêm nút "Xem Lịch Sử"
         self.view_history_button = ttk.Button(main_frame, text="Xem Lịch Sử", style="Accent.TButton")
@@ -122,7 +121,7 @@ class BMIView:
         self.view_faq_button.grid(row=7, column=0, columnspan=2, pady=10, ipadx=10, ipady=10)
 
         # New: Login Button
-        self.login_button = ttk.Button(main_frame, text="Login", style="Accent.TButton", command=self.open_login)
+        self.login_button = ttk.Button(main_frame, text="Đăng nhập", style="Accent.TButton", command=self.open_login)
         self.login_button.grid(row=8, column=0, columnspan=2, pady=10, ipadx=10, ipady=10)
 
         # Separator
@@ -146,6 +145,11 @@ class BMIView:
         advice_label = ttk.Label(main_frame, textvariable=self.advice_var, font=("Helvetica", 12), wraplength=400, foreground="#777777", justify="center")
         advice_label.grid(row=12, column=0, columnspan=2, pady=10)
 
+        # New: View Details Button
+        self.view_details_button = ttk.Button(main_frame, text="Đánh giá sức khỏe", style="Accent.TButton")
+        self.view_details_button.grid(row=13, column=0, columnspan=2, pady=10, ipadx=10, ipady=10)
+        self.view_details_button.grid_remove()  # Disabled by default
+
         # Additional Styling for Other Widgets (Optional)
         self.style.configure("TScale", troughcolor="#D3D3D3", background="#F0F4F7")
 
@@ -153,18 +157,21 @@ class BMIView:
         """Open the login window."""
         LoginWindow(self.root, self.model, self.on_login_success)
 
-    def on_login_success(self):
+    def on_login_success(self, user_id, user_name, role):
         """Handle actions after successful login."""
         self.is_logged_in = True
+        self.userId = user_id
         self.view_history_button.grid()  # Show history button
-        self.login_button.config(text="Logout", command=self.logout)
+        self.user_name_label.config(text=f"Xin chào, {user_name}")
+        self.login_button.config(text="Đăng xuất", command=self.logout)
   
 
     def logout(self):
         """Handle user logout."""
         self.is_logged_in = False
         self.view_history_button.grid_remove()  # Disable history button
-        self.login_button.config(text="Login", command=self.open_login)
+        self.user_name_label.config(text="")
+        self.login_button.config(text="Đăng nhập", command=self.open_login)
  
 
     def show_history(self):

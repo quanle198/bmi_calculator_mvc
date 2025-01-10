@@ -19,18 +19,20 @@ class HistoryWindow:
         title_label.pack(pady=(0, 10))
 
         # Define Treeview columns
-        columns = ("ID", "Date", "BMI", "Category", "Note")
+        columns = ("STT", "Id", "Date", "BMI", "Category", "Note")
         self.tree = ttk.Treeview(main_frame, columns=columns, show="headings", height=15)
 
         # Define headings
-        self.tree.heading("ID", text="ID")
-        self.tree.heading("Date", text="Date")
-        self.tree.heading("BMI", text="BMI")
-        self.tree.heading("Category", text="Category")
-        self.tree.heading("Note", text="Note")
+        self.tree.heading("STT", text="STT")
+        self.tree.heading("Id", text="History ID")
+        self.tree.heading("Date", text="Ngày")
+        self.tree.heading("BMI", text="Chỉ số BMI")
+        self.tree.heading("Category", text="Tinh trạng")
+        self.tree.heading("Note", text="Ghi chú (nhấp đúp để sửa)")
 
         # Define column widths
-        self.tree.column("ID", width=50, anchor="center")
+        self.tree.column("STT", width=50, anchor="center")
+        self.tree.column("Id", width=0, anchor="center", stretch=False)
         self.tree.column("Date", width=150, anchor="center")
         self.tree.column("BMI", width=100, anchor="center")
         self.tree.column("Category", width=150, anchor="center")
@@ -38,8 +40,11 @@ class HistoryWindow:
 
         # Insert data into Treeview
         history = self.model.load_history()
+        stt = 0
         for entry in history:
+            stt += 1
             self.tree.insert("", "end", values=(
+                stt,
                 entry['id'],
                 entry['date'],
                 entry['bmi'],
@@ -68,6 +73,7 @@ class HistoryWindow:
 
     def delete_selected(self):
         selected_item = self.tree.selection()
+        
         if not selected_item:
             messagebox.showwarning("No Selection", "Vui lòng chọn một dòng để xoá.")
             return
@@ -75,7 +81,7 @@ class HistoryWindow:
         # Get the first selected item
         row_id = selected_item[0]
         values = self.tree.item(row_id, "values")
-        entry_id = values[0]
+        entry_id = values[1] # Get the HistoryID
 
         # Confirm deletion
         confirm = messagebox.askyesno("Confirm Delete", "Bạn có chắc chắn muốn xoá dòng này không?")
@@ -98,7 +104,7 @@ class HistoryWindow:
         row_id = self.tree.identify_row(event.y)
         column = self.tree.identify_column(event.x)
 
-        if column != '#5':  # Assuming 'Note' is the 5th column
+        if column != '#6':  # Assuming 'Note' is the 6th column
             return
 
         # Get the column index
@@ -119,7 +125,7 @@ class HistoryWindow:
 
         # Bind events to handle editing
         self.editing_entry.bind("<Return>", lambda e: self.save_edit(row_id, col_index))
-        self.editing_entry.bind("<FocusOut>", lambda e: self.cancel_edit())
+        self.editing_entry.bind("<FocusOut>", lambda e: self.save_edit(row_id, col_index))
 
     def save_edit(self, row_id, col_index):
         new_value = self.editing_entry.get()
@@ -131,8 +137,9 @@ class HistoryWindow:
         current_values[col_index] = new_value
         self.tree.item(row_id, values=current_values)
 
+        print("edit: ", current_values)
         # Update model
-        entry_id = current_values[0]
+        entry_id = current_values[1] # Get the HistoryID
         try:
             self.model.update_history_note(entry_id, new_value)
             messagebox.showinfo("Success", "Ghi chú đã được cập nhật.")
@@ -144,15 +151,9 @@ class HistoryWindow:
             self.editing_entry.destroy()
             self.editing_entry = None
 
-# Example Model Implementation
 class Model:
     def __init__(self):
-        # This is a mock implementation. Replace with actual data handling.
-        self.history = [
-            {'id': '1', 'date': '2024-12-01', 'bmi': '22.5', 'categoryName': 'Normal', 'note': 'Feeling good'},
-            {'id': '2', 'date': '2024-12-15', 'bmi': '24.3', 'categoryName': 'Overweight', 'note': ''},
-            # Add more entries as needed
-        ]
+        self.history = []
 
     def load_history(self):
         return self.history
