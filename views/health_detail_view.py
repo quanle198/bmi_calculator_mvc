@@ -13,7 +13,6 @@ class HealthDetailView:
         self.window.configure(bg="#F0F4F7")
         self.model = model
 
-        # Center the window relative to parent
         self.center_window()
 
         # Main Frame
@@ -23,9 +22,6 @@ class HealthDetailView:
         # Title
         title_label = ttk.Label(main_frame, text="Đánh Giá Sức Khỏe", font=("Helvetica", 18, "bold"), foreground="#333333")
         title_label.pack(pady=(0, 10))
-
-        # Image (Optional: Add relevant images for each category)
-        # For demonstration, we'll skip image implementation
 
         # Category Description
         description = self.get_description()

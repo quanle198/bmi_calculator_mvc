@@ -10,9 +10,9 @@ class BMIView:
     def __init__(self, root, model):
         self.root = root
         self.root.title("BMI Calculator")
-        self.root.geometry("500x800")  # Increased height to accommodate the new button
+        self.root.geometry("500x800")  
         self.root.resizable(True, True)
-        self.root.configure(bg="#8ab4f8")  # Light background color
+        self.root.configure(bg="#8ab4f8")  
         self.model = model
         self.is_logged_in = False  # Track login state
         self.userId = None  # Track the user ID
@@ -35,7 +35,6 @@ class BMIView:
         for i in range(2):
             main_frame.columnconfigure(i, weight=1)
 
-        # Title Label
         # Load the icon image
         icon_image = Image.open("Assets/img/bmi-icon.png")
         icon_image = icon_image.resize((30, 30))
@@ -120,7 +119,7 @@ class BMIView:
         self.view_faq_button = ttk.Button(main_frame, text="Xem FAQ", style="Accent.TButton", command=self.show_faq)
         self.view_faq_button.grid(row=7, column=0, columnspan=2, pady=10, ipadx=10, ipady=10)
 
-        # New: Login Button
+        # Thêm nút Login Button
         self.login_button = ttk.Button(main_frame, text="Đăng nhập", style="Accent.TButton", command=self.open_login)
         self.login_button.grid(row=8, column=0, columnspan=2, pady=10, ipadx=10, ipady=10)
 
@@ -145,12 +144,12 @@ class BMIView:
         advice_label = ttk.Label(main_frame, textvariable=self.advice_var, font=("Helvetica", 12), wraplength=400, foreground="#777777", justify="center")
         advice_label.grid(row=12, column=0, columnspan=2, pady=10)
 
-        # New: View Details Button
-        self.view_details_button = ttk.Button(main_frame, text="Đánh giá sức khỏe", style="Accent.TButton")
+        # Thêm nút Xem chi tiết Button
+        self.view_details_button = ttk.Button(main_frame, text="Xem chi tiết", style="Accent.TButton")
         self.view_details_button.grid(row=13, column=0, columnspan=2, pady=10, ipadx=10, ipady=10)
         self.view_details_button.grid_remove()  # Disabled by default
 
-        # Additional Styling for Other Widgets (Optional)
+        # Additional Styling
         self.style.configure("TScale", troughcolor="#D3D3D3", background="#F0F4F7")
 
     def open_login(self):

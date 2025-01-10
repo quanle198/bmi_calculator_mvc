@@ -22,7 +22,7 @@ class LoginWindow:
         self.window.title("Đăng Nhập")
         self.window.geometry("350x400")
         self.window.resizable(False, False)
-        self.window.grab_set()  # Make the login window modal
+        self.window.grab_set()
 
         # Tiêu đề
         title_label = ttk.Label(self.window, text="Đăng Nhập", font=("Helvetica", 16, "bold"))
@@ -81,4 +81,4 @@ class LoginWindow:
         Xử lý sau khi đăng ký thành công.
         """
         messagebox.showinfo("Thành công", "Bạn đã đăng ký thành công. Vui lòng đăng nhập.")
-        # Có thể tự động chuyển sang cửa sổ đăng nhập hoặc yêu cầu người dùng đăng nhập thủ công
+

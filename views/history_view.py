@@ -5,10 +5,10 @@ from tkinter import messagebox
 
 class HistoryWindow:
     def __init__(self, parent, model):
-        self.model = model  # Store the model to allow deletion and updates
+        self.model = model
         self.window = tk.Toplevel(parent)
         self.window.title("Lịch Sử BMI")
-        self.window.geometry("800x600")  # Increased width to accommodate the new column
+        self.window.geometry("800x600")
         self.window.resizable(False, False)
         self.window.configure(bg="#F0F4F7")
 
@@ -61,7 +61,7 @@ class HistoryWindow:
 
         # Add Delete button
         style = ttk.Style()
-        style.configure("Red.TButton", background="red", foreground="red")  # Changed foreground to white for visibility
+        style.configure("Red.TButton", background="red", foreground="red")
         delete_button = ttk.Button(main_frame, text="Xóa dòng dữ liệu", command=self.delete_selected, style="Red.TButton")
         delete_button.pack(pady=(10, 0))
 

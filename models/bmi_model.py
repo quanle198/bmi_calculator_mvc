@@ -7,8 +7,8 @@ from database.connect import MSSQLConnection
 class BMIModel:
     def __init__(self):
         self.db = MSSQLConnection()
-        self.height = 0.0  # in centimeters
-        self.weight = 0.0  # in kilograms
+        self.height = 0.0
+        self.weight = 0.0
         self.current_user_id = None
         self.history = self.load_history()
     

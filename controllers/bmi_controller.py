@@ -8,8 +8,8 @@ class BMIController:
         self.model = BMIModel()
         self.view = BMIView(root, self.model)
         self.setup()
-        self.last_valid_height = 0.0  # To keep track of the last valid height
-        self.last_valid_weight = 0.0  # To keep track of the last valid weight
+        self.last_valid_height = 0.0
+        self.last_valid_weight = 0.0
         self.categoryId = None
 
     def setup(self):

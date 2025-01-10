@@ -21,7 +21,7 @@ class RegisterWindow:
         self.window.title("Đăng Ký")
         self.window.geometry("350x400")
         self.window.resizable(False, False)
-        self.window.grab_set()  # Make the register window modal
+        self.window.grab_set()
 
         # Tiêu đề
         title_label = ttk.Label(self.window, text="Đăng Ký", font=("Helvetica", 16, "bold"))
